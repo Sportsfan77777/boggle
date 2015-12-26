@@ -25,7 +25,7 @@ public class Cube {
 		}
 		this.letters = letters;
 		
-		long seed = System.currentTimeMillis();
+		long seed = System.nanoTime();
 		random = new Random(seed); // random number generator
 	}
 	

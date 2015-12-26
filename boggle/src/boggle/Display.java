@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +26,8 @@ public class Display extends JPanel implements ActionListener {
 	public final int WIDTH = 400;
 	public final int HEIGHT = 400;
 	
-	public final int BOARD_OFFSET_X = 0;
-	public final int BOARD_OFFSET_Y = 0;
+	public final int BOARD_OFFSET_X = 5;
+	public final int BOARD_OFFSET_Y = 10;
 	
 	public Display() {
 		this.initDisplay();
@@ -64,7 +65,15 @@ public class Display extends JPanel implements ActionListener {
 	
 	public void drawCube(Cube c, int x, int y, Graphics2D g) {
 		Image img = c.getImage();
-		g.drawImage(img, x, y, null);
+		
+		// Rotate + Translate
+		int rotationAngle = c.orientation * 90;
+		AffineTransform transform = new AffineTransform();
+		transform.translate(x, y);
+		transform.rotate(Math.toRadians(rotationAngle), CUBE_SIZE / 2.0, CUBE_SIZE / 2.0);
+		
+		// Draw Image
+		g.drawImage(img, transform, this);
 	}
 	
 	public void paintComponent(Graphics g) {
