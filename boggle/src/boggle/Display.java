@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class Display extends JPanel implements ActionListener {
@@ -27,7 +29,7 @@ public class Display extends JPanel implements ActionListener {
 	Board board;
 	
 	// Game Elements
-	public final int numPlayers = 4;
+	public final int maxPlayers = 4;
 	
 	// Display Board
 	public final int CUBE_SIZE = 75;
@@ -38,11 +40,15 @@ public class Display extends JPanel implements ActionListener {
 	public final int HEIGHT = 500;
 	
 	public final int BOARD_OFFSET_X = (WIDTH - BOARD_SIZE) / 2;
-	public final int BOARD_OFFSET_Y = 10;
+	public final int BOARD_OFFSET_Y = 40;
+	
+	public final int SMALL_BOARD_OFFSET_X = 10;
+	public final int SMALL_BOARD_OFFSET_Y = 10;
 	
 	// GUI Components
-	JTextField[] textFields = new JTextField[4];
-	JTextField[] wordLists = new JTextField[4];
+	JTextField[] textFields = new JTextField[maxPlayers];
+	JTextArea[] wordLists = new JTextArea[maxPlayers];
+	JScrollPane[] scrollPanes = new JScrollPane[maxPlayers];
 	
 	public Display() {
 		this.initDisplay();
@@ -65,10 +71,6 @@ public class Display extends JPanel implements ActionListener {
         boolean shouldWeightX = true;
         
         GridBagConstraints c = new GridBagConstraints();
-        if (shouldFill) {
-        	//natural height, maximum width
-        	c.fill = GridBagConstraints.HORIZONTAL;
-        }
         
         // BOARD
         int boardLocation = 2;
@@ -79,9 +81,10 @@ public class Display extends JPanel implements ActionListener {
         c.gridx = boardLocation;
         this.add(glue, c);
         
-        for (int i = 0; i < numPlayers; i++) {
+        for (int i = 0; i < maxPlayers; i++) {
         	textFields[i] = new JTextField(10);
-        	wordLists[i] = new JTextField(10);
+        	wordLists[i] = new JTextArea(200, 1);
+        	scrollPanes[i] = new JScrollPane(wordLists[i], JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         	
             textFields[i].addActionListener(new textActionListener(i, textFields[i], wordLists[i]));
             c.weightx = 1;
@@ -91,20 +94,25 @@ public class Display extends JPanel implements ActionListener {
             else
             	c.gridx = i+1;
             c.gridy = 0;
+            c.insets = new Insets(0, 0, 0, 0);
             c.ipadx = 0;
             c.ipady = 0;
             this.add(textFields[i], c);
             
-            c.weightx = 1;
+            wordLists[i].setEditable(false);
+            
+            c.weightx = 0.5;
             c.fill = GridBagConstraints.HORIZONTAL;
             if (i < boardLocation)
             	c.gridx = i;
             else
             	c.gridx = i+1;
             c.gridy = 1;
+            int inset = 4;
+            c.insets = new Insets(inset, inset, inset, inset);
             c.ipadx = 0;
             c.ipady = 200;
-            this.add(wordLists[i], c);
+            this.add(scrollPanes[i], c);
             
         }
         
@@ -196,9 +204,9 @@ public class Display extends JPanel implements ActionListener {
 	private class textActionListener implements ActionListener {
 		int player;
 		JTextField tf;
-		JTextField wordList;
+		JTextArea wordList;
 		
-		public textActionListener(int player, JTextField tf, JTextField wordList) {
+		public textActionListener(int player, JTextField tf, JTextArea wordList) {
 			this.player = player;
 			this.tf = tf;
 			this.wordList = wordList;
@@ -207,7 +215,14 @@ public class Display extends JPanel implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String word = tf.getText();
-			System.out.println(player + " " + word);
+			String words = wordList.getText();
+			
+			String newWordList = "";
+			if (words.length() == 0)
+				newWordList = word;
+			else
+				newWordList = words + "\n" + word; 
+			wordList.setText(newWordList);
 			tf.setText("");
 		}
 		
