@@ -2,8 +2,10 @@ package boggle;
 
 public class FiveBoard extends Board {
 	
+	static int length = 5;
+	
 	public FiveBoard() {
-		super();
+		super(length);
 	}
 	
 	public void addCubes() {

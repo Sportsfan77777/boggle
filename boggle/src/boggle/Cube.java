@@ -1,6 +1,12 @@
 package boggle;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 /**
  * Cube on a boggle board
@@ -29,6 +35,23 @@ public class Cube {
 	 */
 	public char getLetter() {
 		return letters.charAt(face);
+	}
+	
+	/**
+	 * returns corresponding letter image (rotation not included)
+	 * @return
+	 */
+	public Image getImage() {
+		char letter = this.getLetter();
+		char upperLetter = Character.toUpperCase(letter);
+		String fn = String.format("images/letter%c.jpg", upperLetter);
+	    BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File(fn));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return img;
 	}
 	
 	/**

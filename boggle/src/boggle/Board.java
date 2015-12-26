@@ -11,9 +11,16 @@ public abstract class Board {
 	ArrayList<Cube> cubes;
 	ArrayList<Cube> currentBoard;
 	
+	int square; // length of board
 	char[][] board;
 	
-	public Board() {
+	public Board(int length) {
+		this.cubes = new ArrayList<Cube>();
+		this.currentBoard = new ArrayList<Cube>();
+		
+		this.square = length;
+		board = new char[this.square][this.square];
+		
 		addCubes();
 		setupBoard();
 	}
