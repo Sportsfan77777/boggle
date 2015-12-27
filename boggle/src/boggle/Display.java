@@ -53,6 +53,11 @@ public class Display extends JPanel implements ActionListener {
 	public Display() {
 		this.initDisplay();
 		this.board = new FiveBoard();
+		
+		Solver s = new Solver();
+		s.setBoard(board.board);
+		s.findAllWords();
+		s.printAll();
 	}
 	
 	private void initDisplay() {
