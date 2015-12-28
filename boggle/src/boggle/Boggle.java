@@ -32,8 +32,5 @@ public class Boggle extends JFrame {
                 boggle.setVisible(true);                
             }
         });
-		
-		//Board b = new FiveBoard();
-		//b.prettyPrint();
 	}
 }
