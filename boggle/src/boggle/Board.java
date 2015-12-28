@@ -36,7 +36,12 @@ public abstract class Board {
 	}
 	
 	public void shuffleBoard() {
-		ArrayList<Cube> tmp = (ArrayList<Cube>)cubes.clone();
+		// Copy cubes to tmp array
+		ArrayList<Cube> tmp = new ArrayList<Cube>(); 
+		for (int i = 0; i < cubes.size(); i++) {
+			tmp.add(cubes.get(i));
+		}
+		// Set up new order of cubes
 		ArrayList<Cube> newBoard = new ArrayList<Cube>();
 		
 		// Randomize Board (Cube Order)

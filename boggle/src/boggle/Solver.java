@@ -26,6 +26,12 @@ public class Solver {
 			minWordLength = 4;
 	}
 	
+	public int findWord(String s) {
+		ArrayList<Integer> skillScores = new ArrayList<Integer>();
+		
+		return -1;
+	}
+	
 	public ArrayList<Score> findAllWords() {
 		int square = board.length;
 		boolean[][] visited = new boolean[square][square];
@@ -42,6 +48,10 @@ public class Solver {
 	private void finderHelper(String s, int row, int col, boolean[][] visited) {
 		boolean[][] visited_copy = copyArray(visited);
 		visited_copy[row][col] = true;
+		
+		// Replace 'q' with 'qu'
+		if (s.charAt(s.length() - 1) == 'q')
+			s += 'u';
 		
 		// Check if this is a word
 		int contains = dict.contains(s);
@@ -99,13 +109,13 @@ public class Solver {
 		for (int i = 0; i < words.size(); i++) {
 			String word = words.get(i).word;
 			if (dict.isMostCommon(word)) {
-				words.get(i).score = 3;
+				words.get(i).vocabScore = 3;
 			}
 			else if (dict.isCommon(word)) {
-				words.get(i).score = 2;
+				words.get(i).vocabScore = 2;
 			}
 			else if (dict.isRare(word)) {
-				words.get(i).score = 1;
+				words.get(i).vocabScore = 1;
 			}
 		}
 	}
@@ -130,13 +140,13 @@ public class Solver {
 		
 		System.out.println("All Words");
 		for (int i = 0; i < allWords.size(); i++) {
-			int score = allWords.get(i).score;
-			System.out.println(allWords.get(i).word + " " + score);
-			if (score == 3)
+			int vocab = allWords.get(i).vocabScore;
+			System.out.println(allWords.get(i).word + " " + vocab);
+			if (vocab == 3)
 				mostCommon++;
-			else if (score == 2)
+			else if (vocab == 2)
 				common++;
-			else if (score == 1)
+			else if (vocab == 1)
 				rare++;
 		}
 		System.out.println("Number of Words: " + allWords.size());
@@ -148,16 +158,27 @@ public class Solver {
 	public class Score {
 		
 		String word;
-		int score; // 0, 1, 2, or 3 (not common, rare, common, most common)
+		int vocabScore; // 0, 1, 2, or 3 (not common, rare, common, most common)
+		int skillScore;
 		
 		public Score(String word) {
 			this.word = word;
-			this.score = 0;
+			this.vocabScore = 0;
+			this.setSkillScore();
 		}
 		
-		public Score(String word, int score) {
+		public Score(String word, int vocab, int skill) {
 			this.word = word;
-			this.score = score;
+			this.vocabScore = vocab;
+			this.skillScore = skill;
+		}
+		
+		private void setSkillScore() {
+			skillScore = word.length();
+			// Make words that end in 's' more noticeable
+			char lastLetter = word.charAt(word.length() - 1);
+			if (lastLetter == 's')
+				skillScore -= 1;
 		}
 	}
 
