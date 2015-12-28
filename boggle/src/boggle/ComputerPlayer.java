@@ -7,8 +7,8 @@ import boggle.Solver.Score;
 
 public class ComputerPlayer extends Player {
 	
-	int skill;
-	int vocabulary;
+	int skill = 0;
+	int vocabulary = 0;
 	
 	int[] skillPercentages = new int[]{100, 100, 100, 100, 100, 
 										100, 100, 100, 100, 100};
@@ -18,10 +18,9 @@ public class ComputerPlayer extends Player {
 	int rarePercent = 0;
 	int otherPercent = 0;
 	
-	ArrayList<String> myListOfWords;
-	
-	public ComputerPlayer() {
-		super();
+	public ComputerPlayer(int number) {
+		super(number);
+		computer = true;
 	}
 	
 	public void clearWords() {
@@ -29,7 +28,9 @@ public class ComputerPlayer extends Player {
 	}
 	
 	public void findWordsOnBoard(ArrayList<Score> words) {
-		Random random = new Random();
+		Random random = new Random(System.nanoTime());
+		// Future: First, randomize the list
+		
 		for (int i = 0; i < words.size(); i++) {
 			Score word = words.get(i);
 			int randomInt = random.nextInt(10000);
@@ -57,6 +58,10 @@ public class ComputerPlayer extends Player {
 			
 			// Combine
 			int comboPercent = vocabPercent * skillPercent;
+			int deduction = 100 * myListOfWords.size(); // Prevent computer from having too many words
+			
+			comboPercent -= deduction;
+			
 			if (comboPercent > randomInt) {
 				myListOfWords.add(word.word);
 			}

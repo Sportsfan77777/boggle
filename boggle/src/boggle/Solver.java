@@ -153,6 +153,7 @@ public class Solver {
 		System.out.println("Number of Rare Words: " + rare);
 		System.out.println("Number of Common Words: " + common);
 		System.out.println("Number of Most Common Words: " + mostCommon);
+		System.out.println();
 	}
 	
 	public class Score {

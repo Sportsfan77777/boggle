@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -37,15 +39,16 @@ public class Display extends JPanel implements ActionListener {
 	
 	// Display Properties
 	public final int WIDTH = 1200;
-	public final int HEIGHT = 500;
+	public final int HEIGHT = 550;
 	
 	public final int BOARD_OFFSET_X = (WIDTH - BOARD_SIZE) / 2;
-	public final int BOARD_OFFSET_Y = 40;
+	public final int BOARD_OFFSET_Y = 50;
 	
 	public final int SMALL_BOARD_OFFSET_X = 10;
 	public final int SMALL_BOARD_OFFSET_Y = 10;
 	
 	// GUI Components
+	JComboBox[] comboBoxes = new JComboBox[maxPlayers];
 	JTextField[] textFields = new JTextField[maxPlayers];
 	JTextArea[] wordLists = new JTextArea[maxPlayers];
 	JScrollPane[] scrollPanes = new JScrollPane[maxPlayers];
@@ -59,6 +62,10 @@ public class Display extends JPanel implements ActionListener {
 		s.findAllWords();
 		s.scoreWords();
 		s.printAll();
+		
+		Game g = new Game(maxPlayers);
+		g.generateWordLists(s.allWords);
+		g.printWordLists(s.allWords);
 	}
 	
 	private void initDisplay() {
@@ -72,9 +79,6 @@ public class Display extends JPanel implements ActionListener {
         
         // Layout
         this.setLayout(new GridBagLayout());
-        
-        boolean shouldFill = true;
-        boolean shouldWeightX = true;
         
         GridBagConstraints c = new GridBagConstraints();
         
@@ -107,7 +111,7 @@ public class Display extends JPanel implements ActionListener {
             
             wordLists[i].setEditable(false);
             
-            c.weightx = 0.5;
+            c.weightx = 1;
             c.fill = GridBagConstraints.HORIZONTAL;
             if (i < boardLocation)
             	c.gridx = i;
@@ -200,7 +204,9 @@ public class Display extends JPanel implements ActionListener {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         
-        this.drawBoard(g2d);            
+        this.drawBoard(g2d);
+        
+        Toolkit.getDefaultToolkit().sync();
     }
 
 	public void actionPerformed(ActionEvent ae) {
