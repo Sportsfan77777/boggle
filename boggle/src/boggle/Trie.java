@@ -24,13 +24,16 @@ public class Trie {
 	
 	
 	private int containsHelper(Node n, String s) {
+		if (s == null)
+			return -1;
+		
 		Node chosenChild = n.hasChild(s.charAt(0));
 		if (chosenChild == null) {
 			// word doesn't exist and nothing with this prefix exists
 			return -1;
 		}
 		else {
-			if (s.length() == 1) {
+			if (s.length() <= 1) {
 				if (chosenChild.value.isEmpty()) {
 					// word doesn't exist
 					return 0;

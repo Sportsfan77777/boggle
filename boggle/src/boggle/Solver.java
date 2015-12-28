@@ -4,16 +4,16 @@ import java.util.ArrayList;
 
 public class Solver {
 	
-	Dictionary d;
+	Dictionary dict;
 	
 	int minWordLength;
 	
 	char[][] board;
-	ArrayList<String> allWords;
+	ArrayList<Score> allWords;
 	
 	public Solver() {
-		d = new Dictionary();
-		allWords = new ArrayList<String>();
+		dict = new Dictionary();
+		allWords = new ArrayList<Score>();
 	}
 	
 	public void setBoard(char[][] board) {
@@ -26,7 +26,7 @@ public class Solver {
 			minWordLength = 4;
 	}
 	
-	public void findAllWords() {
+	public ArrayList<Score> findAllWords() {
 		int square = board.length;
 		boolean[][] visited = new boolean[square][square];
 		
@@ -36,14 +36,15 @@ public class Solver {
 				finderHelper(start, i, j, visited);
 			}
 		}
-		
+		return allWords;
 	}
 	
 	private void finderHelper(String s, int row, int col, boolean[][] visited) {
-		visited[row][col] = true;
+		boolean[][] visited_copy = copyArray(visited);
+		visited_copy[row][col] = true;
 		
 		// Check if this is a word
-		int contains = d.contains(s);
+		int contains = dict.contains(s);
 		if (contains == -1) {
 			// no more words with this prefix
 			return;
@@ -55,9 +56,16 @@ public class Solver {
 		else {
 			// this is a word
 			// it is not already in the list
+			boolean found = false;
+			for (int i = 0; i < allWords.size(); i++) {
+				if (allWords.get(i).word.equals(s)) {
+					found = true;
+					break;
+				}
+			}
 			// it is longer than the minimum word length
-			if (!allWords.contains(s) && s.length() >= minWordLength)
-				allWords.add(s);
+			if (!found && s.length() >= minWordLength)
+				allWords.add(new Score(s));
 			// continue
 		}
 		
@@ -71,15 +79,33 @@ public class Solver {
 					// pass (out of bounds)
 				}
 				else {
-					if (visited[x][y]) {
+					if (visited_copy[x][y]) {
 						// pass (visited already)
 					}
 					else {
 						String newWord = s + board[x][y];
-						boolean[][] visited_copy = copyArray(visited);
 						finderHelper(newWord, x, y, visited_copy);
 					}
 				}
+			}
+		}
+	}
+	
+	public void scoreWords() {
+		scoreWords(allWords);
+	}
+	
+	public void scoreWords(ArrayList<Score> words) {
+		for (int i = 0; i < words.size(); i++) {
+			String word = words.get(i).word;
+			if (dict.isMostCommon(word)) {
+				words.get(i).score = 3;
+			}
+			else if (dict.isCommon(word)) {
+				words.get(i).score = 2;
+			}
+			else if (dict.isRare(word)) {
+				words.get(i).score = 1;
 			}
 		}
 	}
@@ -98,11 +124,41 @@ public class Solver {
 	}
 	
 	public void printAll() {
+		int rare = 0;
+		int common = 0;
+		int mostCommon = 0;
+		
 		System.out.println("All Words");
 		for (int i = 0; i < allWords.size(); i++) {
-			System.out.println(allWords.get(i));
+			int score = allWords.get(i).score;
+			System.out.println(allWords.get(i).word + " " + score);
+			if (score == 3)
+				mostCommon++;
+			else if (score == 2)
+				common++;
+			else if (score == 1)
+				rare++;
 		}
 		System.out.println("Number of Words: " + allWords.size());
+		System.out.println("Number of Rare Words: " + rare);
+		System.out.println("Number of Common Words: " + common);
+		System.out.println("Number of Most Common Words: " + mostCommon);
+	}
+	
+	public class Score {
+		
+		String word;
+		int score; // 0, 1, 2, or 3 (not common, rare, common, most common)
+		
+		public Score(String word) {
+			this.word = word;
+			this.score = 0;
+		}
+		
+		public Score(String word, int score) {
+			this.word = word;
+			this.score = score;
+		}
 	}
 
 }

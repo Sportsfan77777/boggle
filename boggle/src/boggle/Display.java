@@ -57,6 +57,7 @@ public class Display extends JPanel implements ActionListener {
 		Solver s = new Solver();
 		s.setBoard(board.board);
 		s.findAllWords();
+		s.scoreWords();
 		s.printAll();
 	}
 	
