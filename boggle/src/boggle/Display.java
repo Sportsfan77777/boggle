@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -48,24 +49,21 @@ public class Display extends JPanel implements ActionListener {
 	public final int SMALL_BOARD_OFFSET_Y = 10;
 	
 	// GUI Components
-	JComboBox[] comboBoxes = new JComboBox[maxPlayers];
+	JLabel[] skillLabels = new JLabel[maxPlayers];
+	JComboBox[] skillComboBoxes = new JComboBox[maxPlayers];
+	JLabel[] vocabLabels = new JLabel[maxPlayers];
+	JComboBox[] vocabComboBoxes = new JComboBox[maxPlayers];
 	JTextField[] textFields = new JTextField[maxPlayers];
 	JTextArea[] wordLists = new JTextArea[maxPlayers];
 	JScrollPane[] scrollPanes = new JScrollPane[maxPlayers];
 	
 	public Display() {
 		this.initDisplay();
-		this.board = new FiveBoard();
+
+		Game g = new Game(maxPlayers, this);
+		this.board = g.board;
 		
-		Solver s = new Solver();
-		s.setBoard(board.board);
-		s.findAllWords();
-		s.scoreWords();
-		s.printAll();
 		
-		Game g = new Game(maxPlayers);
-		g.generateWordLists(s.allWords);
-		g.printWordLists(s.allWords);
 	}
 	
 	private void initDisplay() {
@@ -96,28 +94,100 @@ public class Display extends JPanel implements ActionListener {
         	wordLists[i] = new JTextArea(200, 1);
         	scrollPanes[i] = new JScrollPane(wordLists[i], JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         	
+        	// Select Skill Level
+        	int skillY = 1;
+        	
+        	skillLabels[i] = new JLabel("Skill:");
+        	skillLabels[i].setForeground(Color.WHITE);
+        	c.weightx = 1;
+        	c.fill = GridBagConstraints.NONE;
+        	c.anchor = GridBagConstraints.WEST;
+        	if (i < boardLocation)
+            	c.gridx = i;
+            else
+            	c.gridx = i+1;
+        	c.gridy = skillY;
+        	c.insets = new Insets(5, 5, 5, 5);
+        	c.ipadx = 0;
+        	c.ipady = 0;
+        	this.add(skillLabels[i], c);
+        	
+        	String[] skillLevels = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        	skillComboBoxes[i] = new JComboBox(skillLevels);
+        	skillComboBoxes[i].setSelectedIndex(5);
+        	c.weightx = 1;
+        	c.fill = GridBagConstraints.NONE;
+        	c.anchor = GridBagConstraints.EAST;
+        	if (i < boardLocation)
+            	c.gridx = i;
+            else
+            	c.gridx = i+1;
+        	c.gridy = skillY;
+        	c.insets = new Insets(0, 0, 0, 0);
+        	c.ipadx = 0;
+        	c.ipady = 0;
+        	this.add(skillComboBoxes[i], c);
+        	
+        	// Select Vocabulary Level
+        	int vocabY = 2;
+        	
+        	vocabLabels[i] = new JLabel("Vocabulary:");
+        	vocabLabels[i].setForeground(Color.WHITE);
+        	c.weightx = 1;
+        	c.fill = GridBagConstraints.NONE;
+        	c.anchor = GridBagConstraints.WEST;
+        	if (i < boardLocation)
+            	c.gridx = i;
+            else
+            	c.gridx = i+1;
+        	c.gridy = vocabY;
+        	c.insets = new Insets(5, 5, 5, 5);
+        	c.ipadx = 0;
+        	c.ipady = 10;
+        	this.add(vocabLabels[i], c);
+        	
+        	String[] vocabLevels = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        	vocabComboBoxes[i] = new JComboBox(vocabLevels);
+        	vocabComboBoxes[i].setSelectedIndex(5);
+        	c.weightx = 1;
+        	c.fill = GridBagConstraints.NONE;
+        	c.anchor = GridBagConstraints.EAST;
+        	if (i < boardLocation)
+            	c.gridx = i;
+            else
+            	c.gridx = i+1;
+        	c.gridy = vocabY;
+        	c.insets = new Insets(0, 0, 0, 0);
+        	c.ipadx = 0;
+        	c.ipady = 0;
+        	this.add(vocabComboBoxes[i], c);
+        	
+        	// Add words to word list
+        	
             textFields[i].addActionListener(new textActionListener(i, textFields[i], wordLists[i]));
             c.weightx = 1;
             c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.BASELINE;
             if (i < boardLocation)
             	c.gridx = i;
             else
             	c.gridx = i+1;
-            c.gridy = 0;
+            c.gridy = 3;
             c.insets = new Insets(0, 0, 0, 0);
             c.ipadx = 0;
-            c.ipady = 0;
+            c.ipady = 10;
             this.add(textFields[i], c);
             
-            wordLists[i].setEditable(false);
-            
+            // Word Lists
+
+            wordLists[i].setEditable(false);            
             c.weightx = 1;
             c.fill = GridBagConstraints.HORIZONTAL;
             if (i < boardLocation)
             	c.gridx = i;
             else
             	c.gridx = i+1;
-            c.gridy = 1;
+            c.gridy = 4;
             int inset = 4;
             c.insets = new Insets(inset, inset, inset, inset);
             c.ipadx = 0;

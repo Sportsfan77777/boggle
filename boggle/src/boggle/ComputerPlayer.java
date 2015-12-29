@@ -71,8 +71,8 @@ public class ComputerPlayer extends Player {
 	public void setSearchSkills(int skill) {
 		this.skill = skill;
 		switch (this.skill) {
-		case 0: skillPercentages = new int[]{100, 100, 100, 100, 100,
-										    100, 100, 100, 100, 100};
+		case 0: skillPercentages = new int[]{100, 100, 100, 0, 0,
+										    0, 0, 0, 0, 0};
 				break;
 		case 1: skillPercentages = new int[]{100, 100, 100, 60, 50,
 				                            45, 30, 15, 10, 2};

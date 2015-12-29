@@ -6,10 +6,15 @@ import boggle.Solver.Score;
 
 public class Game {
 	
-	Player[] players;
+	Display display;
 	
-	public Game(int maxPlayers) {
+	Player[] players;
+	Board board;
+	
+	public Game(int maxPlayers, Display display) {
+		this.display = display;
 		initGame(10);
+		this.startGame();
 	}
 	
 	public void initGame(int maxPlayers) {
@@ -19,6 +24,19 @@ public class Game {
 			((ComputerPlayer)players[i]).setSearchSkills(i + 1);
 			((ComputerPlayer)players[i]).setVocabularySkills(i + 1);
 		}
+	}
+	
+	public void startGame() {
+		this.board = new FiveBoard();
+		
+		Solver s = new Solver();
+		s.setBoard(board.board);
+		s.findAllWords();
+		s.scoreWords();
+		s.printAll();
+		
+		generateWordLists(s.allWords);
+		printWordLists(s.allWords);
 	}
 	
 	public void generateWordLists(ArrayList<Score> words) {
