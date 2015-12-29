@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class Display extends JPanel implements ActionListener {
 	
@@ -49,6 +50,8 @@ public class Display extends JPanel implements ActionListener {
 	public final int SMALL_BOARD_OFFSET_Y = 10;
 	
 	// GUI Components
+	JTextField[] nameFields = new JTextField[maxPlayers]; 
+	JTextField[] scoreFields = new JTextField[maxPlayers]; 
 	JLabel[] skillLabels = new JLabel[maxPlayers];
 	JComboBox[] skillComboBoxes = new JComboBox[maxPlayers];
 	JLabel[] vocabLabels = new JLabel[maxPlayers];
@@ -90,12 +93,48 @@ public class Display extends JPanel implements ActionListener {
         this.add(glue, c);
         
         for (int i = 0; i < maxPlayers; i++) {
-        	textFields[i] = new JTextField(10);
-        	wordLists[i] = new JTextArea(200, 1);
+        	textFields[i] = new JTextField(50);
+        	wordLists[i] = new JTextArea(200, 50);
         	scrollPanes[i] = new JScrollPane(wordLists[i], JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         	
+        	// Name
+        	
+        	nameFields[i] = new JTextField(20);
+        	nameFields[i].setHorizontalAlignment(SwingConstants.CENTER);
+            c.weightx = 1;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.ABOVE_BASELINE;
+            if (i < boardLocation)
+            	c.gridx = i;
+            else
+            	c.gridx = i+1;
+            c.gridy = 0;
+            c.insets = new Insets(5, 5, 5, 65);
+            c.ipadx = 0;
+            c.ipady = 0;
+            this.add(nameFields[i], c);
+            
+            // Score
+            
+            scoreFields[i] = new JTextField(10);
+            scoreFields[i].setText("0");
+            scoreFields[i].setEditable(false);
+            scoreFields[i].setHorizontalAlignment(SwingConstants.CENTER);
+            c.weightx = 1;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.NORTHWEST;
+            if (i < boardLocation)
+            	c.gridx = i;
+            else
+            	c.gridx = i+1;
+            c.gridy = 0;
+            c.insets = new Insets(5, 135, 5, 5);
+            c.ipadx = 0;
+            c.ipady = 0;
+            this.add(scoreFields[i], c);
+        	
         	// Select Skill Level
-        	int skillY = 1;
+        	int skillY = 2;
         	
         	skillLabels[i] = new JLabel("Skill:");
         	skillLabels[i].setForeground(Color.WHITE);
@@ -129,7 +168,7 @@ public class Display extends JPanel implements ActionListener {
         	this.add(skillComboBoxes[i], c);
         	
         	// Select Vocabulary Level
-        	int vocabY = 2;
+        	int vocabY = 3;
         	
         	vocabLabels[i] = new JLabel("Vocabulary:");
         	vocabLabels[i].setForeground(Color.WHITE);
@@ -172,7 +211,7 @@ public class Display extends JPanel implements ActionListener {
             	c.gridx = i;
             else
             	c.gridx = i+1;
-            c.gridy = 3;
+            c.gridy = 4;
             c.insets = new Insets(0, 0, 0, 0);
             c.ipadx = 0;
             c.ipady = 10;
@@ -187,7 +226,7 @@ public class Display extends JPanel implements ActionListener {
             	c.gridx = i;
             else
             	c.gridx = i+1;
-            c.gridy = 4;
+            c.gridy = 5;
             int inset = 4;
             c.insets = new Insets(inset, inset, inset, inset);
             c.ipadx = 0;
