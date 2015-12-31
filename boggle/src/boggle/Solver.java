@@ -32,6 +32,14 @@ public class Solver {
 		return -1;
 	}
 	
+	public ArrayList<String> getAllWords() {
+		ArrayList<String> words = new ArrayList<String>();
+		for (int i = 0; i < allWords.size(); i++) {
+			words.add(allWords.get(i).word);
+		}
+		return words;
+	}
+	
 	public ArrayList<Score> findAllWords() {
 		int square = board.length;
 		boolean[][] visited = new boolean[square][square];

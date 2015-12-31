@@ -30,7 +30,7 @@ import javax.swing.SwingConstants;
 
 public class Display extends JPanel implements ActionListener {
 	
-	Board board;
+	Game game;
 	
 	// Game Elements
 	public final int maxPlayers = 4;
@@ -49,6 +49,11 @@ public class Display extends JPanel implements ActionListener {
 	public final int SMALL_BOARD_OFFSET_X = 10;
 	public final int SMALL_BOARD_OFFSET_Y = 10;
 	
+	// Board Controls
+	JButton newBoardButton;
+	JButton solveBoardButton;
+	JButton scoreButton;
+	
 	// GUI Components
 	JTextField[] nameFields = new JTextField[maxPlayers]; 
 	JTextField[] scoreFields = new JTextField[maxPlayers]; 
@@ -63,8 +68,7 @@ public class Display extends JPanel implements ActionListener {
 	public Display() {
 		this.initDisplay();
 
-		Game g = new Game(maxPlayers, this);
-		this.board = g.board;
+		game = new Game(this);
 		
 		
 	}
@@ -75,9 +79,6 @@ public class Display extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setDoubleBuffered(true);
         
-        // Button
-        JButton button;
-        
         // Layout
         this.setLayout(new GridBagLayout());
         
@@ -85,12 +86,58 @@ public class Display extends JPanel implements ActionListener {
         
         // BOARD
         int boardLocation = 2;
+        int boardGridWidth = 1; 
         Component glue = javax.swing.Box.createGlue();
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = BOARD_SIZE;
+        c.ipadx = BOARD_SIZE - 250;
         c.gridx = boardLocation;
-        this.add(glue, c);
+        //this.add(glue, c);
+               
+        newBoardButton = new JButton("New Board");
+        newBoardButton.addActionListener(
+        		new ActionListener() {
+        			public void actionPerformed(ActionEvent e) {
+        				game.getNewBoard();
+        				repaint();
+        			}
+        		});
+        c.weightx = 1;
+        c.ipadx = BOARD_SIZE - 100;
+        c.gridx = boardLocation;
+        c.gridy = 10;
+        c.anchor = GridBagConstraints.ABOVE_BASELINE;
+        this.add(newBoardButton, c);
+        
+        solveBoardButton = new JButton("Solve Board");
+        solveBoardButton.addActionListener(
+        		new ActionListener() {
+        			public void actionPerformed(ActionEvent e) {
+        				game.solveBoard();
+        				repaint();
+        			}
+        		});
+        c.weightx = 1;
+        c.ipadx = BOARD_SIZE - 100;
+        c.gridx = boardLocation;
+        c.gridy = 11;
+        c.anchor = GridBagConstraints.ABOVE_BASELINE;
+        this.add(solveBoardButton, c);
+        
+        scoreButton = new JButton("Score Word Lists");
+        scoreButton.addActionListener(
+        		new ActionListener() {
+        			public void actionPerformed(ActionEvent e) {
+        				game.scoreWordLists();;
+        				repaint();
+        			}
+        		});
+        c.weightx = 1;
+        c.ipadx = BOARD_SIZE - 100;
+        c.gridx = boardLocation;
+        c.gridy = 12;
+        c.anchor = GridBagConstraints.ABOVE_BASELINE;
+        this.add(scoreButton, c);
         
         for (int i = 0; i < maxPlayers; i++) {
         	textFields[i] = new JTextField(50);
@@ -154,6 +201,7 @@ public class Display extends JPanel implements ActionListener {
         	String[] skillLevels = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         	skillComboBoxes[i] = new JComboBox(skillLevels);
         	skillComboBoxes[i].setSelectedIndex(5);
+        	skillComboBoxes[i].addActionListener(new ComboBoxListener("skill", i));
         	c.weightx = 1;
         	c.fill = GridBagConstraints.NONE;
         	c.anchor = GridBagConstraints.EAST;
@@ -203,7 +251,7 @@ public class Display extends JPanel implements ActionListener {
         	
         	// Add words to word list
         	
-            textFields[i].addActionListener(new textActionListener(i, textFields[i], wordLists[i]));
+            textFields[i].addActionListener(new TextActionListener(i, textFields[i], wordLists[i]));
             c.weightx = 1;
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.BASELINE;
@@ -274,7 +322,10 @@ public class Display extends JPanel implements ActionListener {
 	}
 	
 	public void drawBoard(Graphics2D g) {	
-		ArrayList<Cube> current = board.currentBoard;
+		if (game.board == null)
+			return; // not initialized
+		
+		ArrayList<Cube> current = game.board.currentBoard;
 		
 		int row = 0;
 		int col = 0;
@@ -286,7 +337,7 @@ public class Display extends JPanel implements ActionListener {
 			this.drawCube(current.get(i), cube_x, cube_y, g);
 			
 			// Check for end of row
-			if (col == board.square - 1) {
+			if (col == game.board.square - 1) {
 				row += 1;
 				col = 0;
 			}
@@ -322,12 +373,12 @@ public class Display extends JPanel implements ActionListener {
 		// pass
 	}
 	
-	private class textActionListener implements ActionListener {
+	private class TextActionListener implements ActionListener {
 		int player;
 		JTextField tf;
 		JTextArea wordList;
 		
-		public textActionListener(int player, JTextField tf, JTextArea wordList) {
+		public TextActionListener(int player, JTextField tf, JTextArea wordList) {
 			this.player = player;
 			this.tf = tf;
 			this.wordList = wordList;
@@ -345,6 +396,44 @@ public class Display extends JPanel implements ActionListener {
 				newWordList = words + "\n" + word; 
 			wordList.setText(newWordList);
 			tf.setText("");
+		}
+		
+	}
+	
+	private class ComboBoxListener implements ActionListener {
+		
+		String type;
+		int number;
+		
+		public ComboBoxListener(String s, int number) {
+			this.type = s;
+			this.number = number;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JComboBox box = (JComboBox)e.getSource();
+			String selection = (String) box.getSelectedItem();
+			
+			if (type == "skill") {
+				if (selection == "0") {
+					game.players[number].computer = false;
+				}
+				else {
+					game.players[number].computer = true;
+					game.players[number].setSearchSkills(Integer.parseInt(selection));
+					
+				}
+			}
+			else {
+				if (selection == "0") {
+					game.players[number].computer = false;
+				}
+				else {
+					game.players[number].computer = true;
+					game.players[number].setVocabularySkills(Integer.parseInt(selection));
+				}
+			}
 		}
 		
 	}
