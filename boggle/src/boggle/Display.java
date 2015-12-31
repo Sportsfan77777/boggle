@@ -221,6 +221,7 @@ public class Display extends JPanel implements ActionListener {
         	
         	vocabLabels[i] = new JLabel("Vocabulary:");
         	vocabLabels[i].setForeground(Color.WHITE);
+        	
         	c.weightx = 1;
         	c.fill = GridBagConstraints.NONE;
         	c.anchor = GridBagConstraints.WEST;
@@ -237,6 +238,7 @@ public class Display extends JPanel implements ActionListener {
         	String[] vocabLevels = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         	vocabComboBoxes[i] = new JComboBox(vocabLevels);
         	vocabComboBoxes[i].setSelectedIndex(5);
+        	vocabComboBoxes[i].addActionListener(new ComboBoxListener("vocabulary", i));
         	c.weightx = 1;
         	c.fill = GridBagConstraints.NONE;
         	c.anchor = GridBagConstraints.EAST;
