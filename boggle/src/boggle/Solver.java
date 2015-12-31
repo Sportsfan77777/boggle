@@ -41,6 +41,10 @@ public class Solver {
 	}
 	
 	public ArrayList<Score> findAllWords() {
+		// Reset List
+		allWords.clear();
+		
+		// Build up new list
 		int square = board.length;
 		boolean[][] visited = new boolean[square][square];
 		

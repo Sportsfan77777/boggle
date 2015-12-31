@@ -44,7 +44,7 @@ public class Display extends JPanel implements ActionListener {
 	public final int HEIGHT = 550;
 	
 	public final int BOARD_OFFSET_X = (WIDTH - BOARD_SIZE) / 2;
-	public final int BOARD_OFFSET_Y = 50;
+	public final int BOARD_OFFSET_Y = 30;
 	
 	public final int SMALL_BOARD_OFFSET_X = 10;
 	public final int SMALL_BOARD_OFFSET_Y = 10;
@@ -147,6 +147,7 @@ public class Display extends JPanel implements ActionListener {
         	// Name
         	
         	nameFields[i] = new JTextField(20);
+        	nameFields[i].setText("Player " + (i+1));
         	nameFields[i].setHorizontalAlignment(SwingConstants.CENTER);
             c.weightx = 1;
             c.fill = GridBagConstraints.HORIZONTAL;

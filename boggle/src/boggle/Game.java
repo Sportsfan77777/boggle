@@ -32,6 +32,11 @@ public class Game {
 	
 	public void getNewBoard() {
 		this.board = new FiveBoard();
+		
+		// Clear Words Lists (Future: Also archive them)
+		for (int i = 0; i < players.length; i++) {
+			display.wordLists[i].setText("");
+		}
 	}
 	
 	public void solveBoard() {
@@ -41,19 +46,18 @@ public class Game {
 		this.solver.printAll();
 		
 		generateWordLists(this.solver.allWords);
-		printWordLists(this.solver.allWords);
 	}
 	
 	public void generateWordLists(ArrayList<Score> words) {
 		for (int i = 0; i < players.length; i++) {
 			if (players[i].computer) {
 				players[i].findWordsOnBoard(words);
-				enterWordList(i);
+				displayWordList(i);
 			}
 		}
 	}
 	
-	public void enterWordList(int number) {
+	public void displayWordList(int number) {
 		// Clear Old List
 		display.wordLists[number].setText("");
 		
@@ -66,13 +70,35 @@ public class Game {
 		display.wordLists[number].setText(newList);
 	}
 	
+	public void printWordLists() {
+		printWordLists(this.solver.allWords);
+	}
+	
 	public void printWordLists(ArrayList<Score> words) {
 		for (int i = 0; i < players.length; i++) {
 			players[i].printWordList(words);
 		}
 	}
 	
+	public void storeWordList(int number) {
+		String wordList = display.wordLists[number].getText();
+		String[] words = wordList.split("\n");
+		ArrayList<String> myListOfWords = new ArrayList<String>();
+		for (int i = 0; i < words.length; i++) {
+			myListOfWords.add(words[i]);
+		}
+		players[number].myListOfWords = myListOfWords;
+	}
+	
 	public void scoreWordLists() {
+		// Store All Words
+		for (int i = 0; i < players.length; i++) {
+			if (!players[i].computer)
+				storeWordList(i);
+		}
+		printWordLists();
+		
+		// Gather All Words
 		ArrayList<String> allWords = solver.getAllWords();
 		
 		ArrayList<String> masterList = new ArrayList<String>();

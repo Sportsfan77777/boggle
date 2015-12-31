@@ -50,6 +50,11 @@ public class Player {
 	
 	// Computer Play
 	public void findWordsOnBoard(ArrayList<Score> words) {
+		// Reset list
+		myListOfWords.clear();
+		
+		// Build new list of words
+		
 		Random random = new Random(System.nanoTime());
 		// Future: First, randomize the list
 		
