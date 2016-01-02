@@ -3,6 +3,7 @@ package boggle;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -17,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -44,15 +46,19 @@ public class Display extends JPanel implements ActionListener {
 	public final int HEIGHT = 550;
 	
 	public final int BOARD_OFFSET_X = (WIDTH - BOARD_SIZE) / 2;
-	public final int BOARD_OFFSET_Y = 30;
+	public final int BOARD_OFFSET_Y = 35;
 	
 	public final int SMALL_BOARD_OFFSET_X = 10;
 	public final int SMALL_BOARD_OFFSET_Y = 10;
+	
+	// Timer
+	Hourglass timer;
 	
 	// Board Controls
 	JButton newBoardButton;
 	JButton solveBoardButton;
 	JButton scoreButton;
+	JButton timerButton;
 	
 	// GUI Components
 	JTextField[] nameFields = new JTextField[maxPlayers]; 
@@ -138,6 +144,18 @@ public class Display extends JPanel implements ActionListener {
         c.gridy = 12;
         c.anchor = GridBagConstraints.ABOVE_BASELINE;
         this.add(scoreButton, c);
+        
+        // Timer
+        //timer = new Hourglass(0, this); // initialize to zero
+        timerButton = new JButton("Flip the Hourglass");
+        timerButton.addActionListener(new HourglassListener(this));
+        c.ipadx = BOARD_SIZE - 100;
+        c.gridx = boardLocation;
+        c.gridy = 14;
+        c.anchor = GridBagConstraints.ABOVE_BASELINE;
+        this.add(timerButton, c);
+        
+        // Different Players
         
         for (int i = 0; i < maxPlayers; i++) {
         	textFields[i] = new JTextField(50);
@@ -281,7 +299,7 @@ public class Display extends JPanel implements ActionListener {
             int inset = 4;
             c.insets = new Insets(inset, inset, inset, inset);
             c.ipadx = 0;
-            c.ipady = 200;
+            c.ipady = 250;
             this.add(scrollPanes[i], c);
             
         }
@@ -363,11 +381,21 @@ public class Display extends JPanel implements ActionListener {
 		g.drawImage(img, transform, this);
 	}
 	
+	public void drawTimer(Graphics2D g) {
+		if (timer != null) {
+			String time = timer.getTime();
+			g.setColor(Color.ORANGE);
+			g.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 16));
+			g.drawString(time, (WIDTH - 35) / 2, 25);
+		}
+	}
+	
 	public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         
         this.drawBoard(g2d);
+        this.drawTimer(g2d);
         
         Toolkit.getDefaultToolkit().sync();
     }
@@ -438,7 +466,20 @@ public class Display extends JPanel implements ActionListener {
 				}
 			}
 		}
+	}
+	
+	private class HourglassListener implements ActionListener {
 		
+		Display d;
+		
+		public HourglassListener(Display d) {
+			this.d = d;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			timer = new Hourglass(d); // initialize to countdown
+			timer.start();
+		}
 	}
 
 }
