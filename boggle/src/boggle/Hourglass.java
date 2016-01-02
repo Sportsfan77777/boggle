@@ -12,7 +12,7 @@ public class Hourglass extends Thread {
 	
 	public Hourglass(Display d) {
 		super();
-		this.time = 180;
+		this.time = 181;
 		this.startTime = this.time;
 		this.display = d;
 	}

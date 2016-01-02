@@ -478,7 +478,7 @@ public class Display extends JPanel implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
 			timer = new Hourglass(d); // initialize to countdown
-			timer.start();
+			timer.start(); // start countdown
 		}
 	}
 
