@@ -219,7 +219,7 @@ public class Display extends JPanel implements ActionListener {
         	
         	String[] skillLevels = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         	skillComboBoxes[i] = new JComboBox(skillLevels);
-        	skillComboBoxes[i].setSelectedIndex(5);
+        	skillComboBoxes[i].setSelectedIndex(0);
         	skillComboBoxes[i].addActionListener(new ComboBoxListener("skill", i));
         	c.weightx = 1;
         	c.fill = GridBagConstraints.NONE;
@@ -255,7 +255,7 @@ public class Display extends JPanel implements ActionListener {
         	
         	String[] vocabLevels = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         	vocabComboBoxes[i] = new JComboBox(vocabLevels);
-        	vocabComboBoxes[i].setSelectedIndex(5);
+        	vocabComboBoxes[i].setSelectedIndex(0);
         	vocabComboBoxes[i].addActionListener(new ComboBoxListener("vocabulary", i));
         	c.weightx = 1;
         	c.fill = GridBagConstraints.NONE;

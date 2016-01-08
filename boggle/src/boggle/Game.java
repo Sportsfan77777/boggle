@@ -25,8 +25,8 @@ public class Game {
 		players = new Player[maxPlayers];
 		for (int i = 0; i < maxPlayers; i++) {
 			players[i] = new Player(i + 1);
-			players[i].setSearchSkills(5);
-			players[i].setVocabularySkills(5);
+			players[i].setSearchSkills(0);
+			players[i].setVocabularySkills(0);
 		}
 	}
 	
